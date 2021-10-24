@@ -1,0 +1,34 @@
+cabal-version:      3.0
+name:               my-xmonad
+version:            0.1.0.0
+synopsis:           Building environment for XMonad
+
+-- A longer description of the package.
+description:        fetch, build and install XMonad all within this package
+homepage:           https://github.com/qst0528/my-xmonad
+
+-- A URL where users can report bugs.
+-- bug-reports:
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             Suto, Masanori
+maintainer:         suto@geek-masa.com
+
+-- A copyright notice.
+-- copyright:
+category:           System
+extra-source-files: CHANGELOG.md
+
+executable my-xmonad
+    main-is:          xmonad.hs
+
+    -- Modules included in this executable, other than Main.
+    -- other-modules:
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends: base ^>=4.15.0.0
+                 , xmonad
+                 , xmonad-contrib
+    hs-source-dirs:   my-xmonad
+    default-language: Haskell2010
