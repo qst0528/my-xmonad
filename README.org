@@ -1,0 +1,7 @@
+* Usage
+#+begin_src sh
+  $ cd ~
+  $ git clone https://github.com/qst0528/my-xmonad.git .xmonad
+  $ cd .xmonad
+  $ cabal build
+#+end_src
