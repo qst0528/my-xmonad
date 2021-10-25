@@ -1,11 +1,1 @@
 packages: .
-
-source-repository-package
-        type:     git
-        location: https://github.com/xmonad/xmonad.git
-        tag:      79afdfbbb95e905327561630391f01ff55cc1369
-
-source-repository-package
-        type:     git
-        location: https://github.com/xmonad/xmonad-contrib.git
-        tag:      f39218ddb5ffeddce90f620910d5ef2c14f2b43d
