@@ -1,12 +1,10 @@
 import XMonad
 import XMonad.Util.EZConfig (checkKeymap)
 
-import XMonadConfig.XConfig (
-  myTerminal, myWorkspaces, myBorderWidth,
-  myFocusFollowsMouse, myClickJustFocuses)
+import XMonadConfig.XConfig (myTerminal, myWorkspaces,
+                             myBorderWidth, myFocusFollowsMouse,
+                             myClickJustFocuses)
 import XMonadConfig.Input   (myModMask, addMyKeys)
-
-
 
 main :: IO ()
 main = xmonad $ myConfig
