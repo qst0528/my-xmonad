@@ -1,6 +1,5 @@
-module XMonadConfig.Input
-  ( myModMask
-  , addMyKeys) where
+module XMonadConfig.Bind
+  (addMyKeys) where
 
 import System.Exit (exitSuccess)
 import XMonad
@@ -15,10 +14,7 @@ import XMonad.Util.NamedActions (addName, NamedAction, (^++^), HasName, xMessage
 import XMonad.Util.EZConfig (mkKeymap, mkNamedKeymap)
 import XMonad.Util.Run      (safeSpawn, safeSpawnProg, runInTerm)
 
-import XMonadConfig.XConfig (myXPConfig, myWorkspaces)
-
-myModMask :: KeyMask
-myModMask = mod4Mask
+import XMonadConfig.Common (myXPConfig, myWorkspaces, myModMask)
 
 addMyKeys :: XConfig l -> XConfig l
 addMyKeys = addDescrKeys' ((myModMask, xK_h), xMessage) myKeys
