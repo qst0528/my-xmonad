@@ -30,7 +30,7 @@ myKeys = \c -> mkNamedKeymap c $
   , ("M-S-v"      , addName "Open SSH prompt" $ sshPrompt myXPConfig)
   , ("M-e"        , addName "Open Emacs" $ safeSpawn "emacsclient" ["--create-frame"])
   , ("M-i p"      , addName "Launch Nyxt Personal" $ safeSpawnProg "nyxt-personal")
-  , ("M-i w"      , addName "Launch Nyxt Work" $ safeSpawnProg "nyxt")
+  , ("M-i w"      , addName "Launch Nyxt Work" $ safeSpawnProg "nyxt-work")
   , ("M-i n"      , addName "Launch Nyxt NSFW" $ safeSpawnProg "nyxt-nsfw")
   , ("M-i y"      , addName "Launch Youtube" $ safeSpawnProg "youtube")
   , ("M-i m"      , addName "Launch Google Meet" $ safeSpawnProg "google-meet")
