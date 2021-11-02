@@ -4,6 +4,7 @@ import XMonad
 
 import XMonad.Hooks.ManageDocks  (docks)
 import XMonad.Hooks.EwmhDesktops (ewmhFullscreen, ewmh)
+import XMonad.Layout.Fullscreen  (fullscreenSupportBorder)
 
 import XMonadConfig.Common ( myNormalBorderColor
                            , myFocusedBorderColor
@@ -16,7 +17,7 @@ import XMonadConfig.Common ( myNormalBorderColor
 import XMonadConfig.Hook   (myManageHook, myStartupHook)
 import XMonadConfig.Bind   (addMyKeys)
 
-myXConfig = docks . addMyKeys . ewmhFullscreen . ewmh $
+myXConfig = fullscreenSupportBorder . docks . addMyKeys . ewmhFullscreen . ewmh $
   def
   { -- Attributes
     normalBorderColor  = myNormalBorderColor
