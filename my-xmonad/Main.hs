@@ -28,7 +28,7 @@ import XMonad.Hooks.ManageHelpers (composeOne,
                                    isDialog)
 import XMonad.Layout.Fullscreen   (fullscreenSupportBorder)
 import XMonad.Layout.NoBorders    (smartBorders)
-import XMonad.Actions.PhysicalScreens (viewScreen, sendToScreen)
+-- import XMonad.Actions.PhysicalScreens (viewScreen, sendToScreen, verticalScreenOrderer)
 
 main :: IO ()
 main = xmonad $ do
@@ -77,13 +77,6 @@ main = xmonad $ do
     ]
   withScreens $ do
     sKeys    =: ["a", "r", "s"]
-    sActions =: [("M-"  , viewScreen),
-                 ("M-S-", sendToScreen)]
-  keys =+
-    [("M-" ++ otherModMasks ++ key, f sc)
-    | (key, sc)          <- zip ["a", "r", "s"] [0..]
-    , (otherModMasks, f) <- [("", viewScreen def), ("S-", sendToScreen def)]
-    ]
 
 myXPConfig :: XPConfig
 myXPConfig = def
