@@ -5,17 +5,29 @@ import qualified XMonad.StackSet as W
 import System.Exit (exitSuccess)
 
 import XMonad.Config.Prime
-import XMonad.Util.Run            (safeSpawn, safeSpawnProg, runInTerm)
+import XMonad.Util.Run            (safeSpawn, safeSpawnProg, unsafeSpawn, runInTerm)
 import XMonad.Util.Loggers
+import XMonad.Util.Cursor         (setDefaultCursor)
+import XMonad.Util.Hacks as Hacks
 import XMonad.Util.WorkspaceCompare (getSortByXineramaRule)
 import XMonad.Prompt
 import XMonad.Prompt.Pass         (passPrompt, passEditPrompt)
 import XMonad.Prompt.RunOrRaise   (runOrRaisePrompt)
 import XMonad.Prompt.Ssh          (sshPrompt)
+import XMonad.Actions.Search as S (promptSearch,
+                                  selectSearch,
+                                  SearchEngine,
+                                  wikipedia,
+                                  github,
+                                  ebay,
+                                  dictionary,
+                                  amazon,
+                                  hoogle,
+                                  maps,
+                                  google)
 import XMonad.Hooks.ManageDocks   (docks, avoidStruts)
 import XMonad.Hooks.EwmhDesktops  (ewmhFullscreen, ewmh)
 import XMonad.Hooks.StatusBar     (statusBarPropTo,
-                                   withEasySB,
                                    StatusBarConfig,
                                    killAllStatusBars,
                                    dynamicSBs)
@@ -27,7 +39,7 @@ import XMonad.Hooks.ManageHelpers (composeOne,
                                    isFullscreen,
                                    isDialog)
 import XMonad.Layout.Fullscreen   (fullscreenSupportBorder)
-import XMonad.Layout.NoBorders    (smartBorders)
+import XMonad.Layout.Accordion    (Accordion(..))
 -- import XMonad.Actions.PhysicalScreens (viewScreen, sendToScreen, verticalScreenOrderer)
 
 main :: IO ()
@@ -47,34 +59,53 @@ main = xmonad $ do
                             ]
 
   startupHook =+ safeSpawn "picom" ["--daemon"]
+  startupHook =+ setDefaultCursor xC_left_ptr
   startupHook =+ killAllStatusBars
 
-  resetLayout $ Tall 1 (3/100) (1/2)
+  resetLayout $ Tall 1 (3/100) (1/2) ||| Accordion
   modifyLayout avoidStruts
 
-  apply $ fullscreenSupportBorder . ewmhFullscreen . ewmh . docks
+  apply $ fullscreenSupportBorder . ewmhFullscreen . ewmh . docks . Hacks.javaHack
 
   apply $ dynamicSBs barSpawner
 
+  keys =- ["M-<Space>"]
   keys =+
     [ ("M-v"        , runInTerm "" "tmux new-session")
     , ("M-S-v"      , sshPrompt myXPConfig)
-    , ("M-e"        , safeSpawn "emacsclient" ["--create-frame"])
-    , ("M-i p"      , safeSpawnProg "nyxt-personal")
+    , ("M-e"        , safeSpawn "emacsclient" ["--create-frame", "--eval", "(dired \"~\")"])
+    , ("M-x"        , runOrRaisePrompt myXPConfig)
+    ]
+
+  keys =+
+    [ ("M-i p"      , safeSpawnProg "nyxt-personal")
     , ("M-i w"      , safeSpawnProg "nyxt-work")
     , ("M-i n"      , safeSpawnProg "nyxt-nsfw")
     , ("M-i y"      , safeSpawnProg "youtube")
     , ("M-i m"      , safeSpawnProg "google-meet")
-    , ("M-p p"      , passPrompt myXPConfig)
+    ]
+
+  keys =+
+    [ ("M-l " ++ k  , S.promptSearch myXPConfig f) | (k, f) <- searchList ]
+
+  keys =+
+    [ ("M-w l"      , sendMessage NextLayout)
+    ]
+
+  keys =+
+    [ ("M-p p"      , passPrompt myXPConfig)
     , ("M-p e"      , passEditPrompt myXPConfig)
     , ("M-<Tab>"    , windows W.focusDown)
     , ("M-S-<Tab>"  , windows W.focusUp)
     , ("M-<Return>" , windows W.shiftMaster)
     , ("M-q"        , kill)
-    , ("M-l"        , runOrRaisePrompt myXPConfig)
-    , ("M-m r"      , spawn "xmonad --restart")
+    , ("M-S-q"      , withFocused $ \w -> spawn ("xkill -id " ++ show w))
+    , ("<Print>"    , spawn "scrot --focused ~/Pictures/ScreenShots/%F_%H%M%S%Z_window.png --exec 'optipng -o4 $f'")
+    , ("M-m s"      , spawn "scrot ~/Pictures/ScreenShots/%F_%H%M%S%Z.png --exec 'optipng -o3 $f'")
+    , ("M-m r"      , unsafeSpawn "xmonad --restart")
     , ("M-m q"      , io exitSuccess)
     ]
+    
   withScreens $ do
     sKeys    =: ["a", "r", "s"]
 
@@ -85,19 +116,28 @@ myXPConfig = def
   , position = CenteredAt 0.3 0.8
   }
 
+searchList :: [(String, S.SearchEngine)]
+searchList = [ ("g", S.google)
+             , ("h", S.hoogle)
+             , ("w", S.wikipedia)
+             , ("a", S.amazon)
+             , ("e", S.ebay)
+             , ("d", S.dictionary)
+             ]
+
 xmobarMain :: StatusBarConfig
 xmobarMain = statusBarPropTo "_XMONAD_LOG_0" "xmobar -x 0 ~/.config/xmobar/xmobarrc_main" (pure $ xmobarMainPP 0)
 xmobarSub1 :: StatusBarConfig
 xmobarSub1 = statusBarPropTo "_XMONAD_LOG_1" "xmobar -x 1 ~/.config/xmobar/xmobarrc_sub1" (pure $ xmobarMainPP 1)
 xmobarSub2 :: StatusBarConfig
 xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" "xmobar -x 2 ~/.config/xmobar/xmobarrc_sub2" (pure $ xmobarMainPP 2)
-
+ 
 xmobarMainPP :: ScreenId -> PP
 xmobarMainPP = \s -> xmobarPP
-  { ppOrder  = \[ws, l, _, wins] -> [ws, l, wins]
+  { ppOrder  = \(ws:_:_:xs) -> [ws] ++ xs
   , ppSort   = getSortByXineramaRule
-  , ppExtras = [
-                logTitlesOnScreen s formatFocused formatUnfocused
+  , ppExtras = [ logLayoutOnScreen s
+               , logTitlesOnScreen s formatFocused formatUnfocused
                ]
   }
   where
