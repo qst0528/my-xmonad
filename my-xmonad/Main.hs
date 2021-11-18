@@ -126,11 +126,11 @@ searchList = [ ("g", S.google)
              ]
 
 xmobarMain :: StatusBarConfig
-xmobarMain = statusBarPropTo "_XMONAD_LOG_0" "xmobar -x 0 ~/.config/xmobar/xmobarrc_main" (pure $ xmobarMainPP 0)
+xmobarMain = statusBarPropTo "_XMONAD_LOG_0" ("xmobar_wrapper --screen=0 --config=$HOME/.config/xmobar/xmobarrc_main --font='xft:M PLUS 1  Code'") (pure $ xmobarMainPP 0)
 xmobarSub1 :: StatusBarConfig
-xmobarSub1 = statusBarPropTo "_XMONAD_LOG_1" "xmobar -x 1 ~/.config/xmobar/xmobarrc_sub1" (pure $ xmobarMainPP 1)
+xmobarSub1 = statusBarPropTo "_XMONAD_LOG_1" ("xmobar_wrapper --screen=1 --config=$HOME/.config/xmobar/xmobarrc_sub1 --font='xft:M PLUS 1  Code'") (pure $ xmobarMainPP 1)
 xmobarSub2 :: StatusBarConfig
-xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" "xmobar -x 2 ~/.config/xmobar/xmobarrc_sub2" (pure $ xmobarMainPP 2)
+xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" ("xmobar_wrapper --screen=2 --config=$HOME/.config/xmobar/xmobarrc_sub2 --font='xft:M PLUS 1  Code'") (pure $ xmobarMainPP 2)
  
 xmobarMainPP :: ScreenId -> PP
 xmobarMainPP = \s -> xmobarPP
