@@ -11,6 +11,7 @@ import XMonad.Util.Cursor         (setDefaultCursor)
 import XMonad.Util.Hacks as Hacks
 import XMonad.Util.WorkspaceCompare (getSortByXineramaRule)
 import XMonad.Prompt
+import XMonad.Prompt.Unicode      (typeUnicodePrompt)
 import XMonad.Prompt.Pass         (passPrompt, passEditPrompt)
 import XMonad.Prompt.RunOrRaise   (runOrRaisePrompt)
 import XMonad.Prompt.Ssh          (sshPrompt)
@@ -90,15 +91,19 @@ main = xmonad $ do
 
   keys =+
     [ ("M-w l"      , sendMessage NextLayout)
+    , ("M-<Tab>"    , windows W.focusDown)
+    , ("M-S-<Tab>"  , windows W.focusUp)
+    , ("M-<Return>" , windows W.shiftMaster)
     ]
 
   keys =+
     [ ("M-p p"      , passPrompt myXPConfig)
     , ("M-p e"      , passEditPrompt myXPConfig)
-    , ("M-<Tab>"    , windows W.focusDown)
-    , ("M-S-<Tab>"  , windows W.focusUp)
-    , ("M-<Return>" , windows W.shiftMaster)
-    , ("M-q"        , kill)
+    , ("M-u"        , typeUnicodePrompt "/usr/share/unicode/UnicodeData.txt" myXPConfig)
+    ]
+    
+  keys =+
+    [ ("M-q"        , kill)
     , ("M-S-q"      , withFocused $ \w -> spawn ("xkill -id " ++ show w))
     , ("<Print>"    , spawn "scrot --focused ~/Pictures/ScreenShots/%F_%H%M%S%Z_window.png --exec 'optipng -o4 $f'")
     , ("M-m s"      , spawn "scrot ~/Pictures/ScreenShots/%F_%H%M%S%Z.png --exec 'optipng -o3 $f'")
@@ -107,11 +112,11 @@ main = xmonad $ do
     ]
     
   withScreens $ do
-    sKeys    =: ["a", "r", "s"]
+    sKeys    =: ["r", "s", "t"]
 
 myXPConfig :: XPConfig
 myXPConfig = def
-  { font     = "xft:M PLUS 1 Code:size=24"
+  { font     = "xft:DejaVu Sans Mono:size=24"
   , height   = 64
   , position = CenteredAt 0.3 0.8
   }
