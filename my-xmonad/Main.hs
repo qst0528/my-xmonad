@@ -130,12 +130,15 @@ searchList = [ ("g", S.google)
              , ("d", S.dictionary)
              ]
 
+myXmobarFont :: String
+myXmobarFont = " --font=xft:DejaVu Sans Mono --extra-font=xft:M PLUS 1  Code"
+
 xmobarMain :: StatusBarConfig
-xmobarMain = statusBarPropTo "_XMONAD_LOG_0" ("xmobar_wrapper --screen=0 --config=$HOME/.config/xmobar/xmobarrc_main --font='xft:M PLUS 1  Code'") (pure $ xmobarMainPP 0)
+xmobarMain = statusBarPropTo "_XMONAD_LOG_0" ("xmobar_wrapper --screen=0 --config=$HOME/.config/xmobar/xmobarrc_main" ++ myXmobarFont) (pure $ xmobarMainPP 0)
 xmobarSub1 :: StatusBarConfig
-xmobarSub1 = statusBarPropTo "_XMONAD_LOG_1" ("xmobar_wrapper --screen=1 --config=$HOME/.config/xmobar/xmobarrc_sub1 --font='xft:M PLUS 1  Code'") (pure $ xmobarMainPP 1)
+xmobarSub1 = statusBarPropTo "_XMONAD_LOG_1" ("xmobar_wrapper --screen=1 --config=$HOME/.config/xmobar/xmobarrc_sub1" ++ myXmobarFont) (pure $ xmobarMainPP 1)
 xmobarSub2 :: StatusBarConfig
-xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" ("xmobar_wrapper --screen=2 --config=$HOME/.config/xmobar/xmobarrc_sub2 --font='xft:M PLUS 1  Code'") (pure $ xmobarMainPP 2)
+xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" ("xmobar_wrapper --screen=2 --config=$HOME/.config/xmobar/xmobarrc_sub2" ++ myXmobarFont) (pure $ xmobarMainPP 2)
  
 xmobarMainPP :: ScreenId -> PP
 xmobarMainPP = \s -> xmobarPP
