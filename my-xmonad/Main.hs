@@ -74,6 +74,10 @@ main = xmonad $ do
 
   apply $ dynamicSBs barSpawner
 
+  withWorkspaces $ do
+--    wsNames =: ["🀐", "🀑", "🀒", "🀓", "🀔", "🀕", "🀖", "🀗", "🀘"]
+    wsKeys =: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
+
   keys =- ["M-<Space>"]
   keys =+
     [ ("M-v"        , runInTerm "" "tmux new-session")
@@ -157,7 +161,7 @@ xmobarMainPP = \s -> xmobarPP
     formatUnfocused = wrap "(" ")" . xmobarColor "#bd93f9" "" . shorten 35 . xmobarStrip
 
 barSpawner :: ScreenId -> IO StatusBarConfig
-barSpawner 0 = pure $ xmobarMain
-barSpawner 1 = pure $ xmobarSub1
-barSpawner 2 = pure $ xmobarSub2
+barSpawner 0 = pure xmobarMain
+barSpawner 1 = pure xmobarSub1
+barSpawner 2 = pure xmobarSub2
 barSpawner _ = mempty
