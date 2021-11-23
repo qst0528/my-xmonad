@@ -120,7 +120,7 @@ main = xmonad $ do
 
 myXPConfig :: XPConfig
 myXPConfig = def
-  { font     = "xft:DejaVu Sans Mono:size=24"
+  { font     = "xft:Noto Sans CJK JP:size=12"
   , height   = 64
   , position = CenteredAt 0.3 0.8
   }
@@ -135,18 +135,18 @@ searchList = [ ("g", S.google)
              ]
 
 myXmobarFont :: String
-myXmobarFont = " --font='xft:M PLUS 1  Code'"
+myXmobarFont = " --font='xft:Noto Sans Mono CJK JP:style=regular:size=12'"
 
 xmobarMain :: StatusBarConfig
-xmobarMain = statusBarPropTo "_XMONAD_LOG_0" ("xmobar_wrapper --screen=0 --config=$HOME/.config/xmobar/xmobarrc_main" ++ myXmobarFont) (pure $ xmobarMainPP 0)
+xmobarMain = statusBarPropTo "_XMONAD_LOG_0" ("xmobar --screen=0 $HOME/.config/xmobar/xmobarrc_main" ++ myXmobarFont) (pure $ xmobarMainPP 0)
 xmobarSub1 :: StatusBarConfig
-xmobarSub1 = statusBarPropTo "_XMONAD_LOG_1" ("xmobar_wrapper --screen=1 --config=$HOME/.config/xmobar/xmobarrc_sub1" ++ myXmobarFont) (pure $ xmobarMainPP 1)
+xmobarSub1 = statusBarPropTo "_XMONAD_LOG_1" ("xmobar --screen=1 $HOME/.config/xmobar/xmobarrc_sub1" ++ myXmobarFont) (pure $ xmobarMainPP 1)
 xmobarSub2 :: StatusBarConfig
-xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" ("xmobar_wrapper --screen=2 --config=$HOME/.config/xmobar/xmobarrc_sub2" ++ myXmobarFont) (pure $ xmobarMainPP 2)
+xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" ("xmobar --screen=2 $HOME/.config/xmobar/xmobarrc_sub2" ++ myXmobarFont) (pure $ xmobarMainPP 2)
  
 xmobarMainPP :: ScreenId -> PP
 xmobarMainPP = \s -> xmobarPP
-  { ppOrder  = \(ws:_:_:xs) -> [ws] ++ xs
+  { ppOrder  = \(ws:_:_:xs) -> ws : xs
   , ppSort   = getSortByXineramaRule
   , ppExtras = [ logLayoutOnScreen s
                , logTitlesOnScreen s formatFocused formatUnfocused
