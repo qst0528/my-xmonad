@@ -131,7 +131,7 @@ searchList = [ ("g", S.google)
              ]
 
 myXmobarFont :: String
-myXmobarFont = " --font=xft:DejaVu Sans Mono --extra-font=xft:M PLUS 1  Code"
+myXmobarFont = " --font='xft:M PLUS 1  Code'"
 
 xmobarMain :: StatusBarConfig
 xmobarMain = statusBarPropTo "_XMONAD_LOG_0" ("xmobar_wrapper --screen=0 --config=$HOME/.config/xmobar/xmobarrc_main" ++ myXmobarFont) (pure $ xmobarMainPP 0)
