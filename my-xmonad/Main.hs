@@ -37,7 +37,9 @@ import XMonad.Hooks.ManageHelpers (composeOne,
                                    (-?>),
                                    doFullFloat,
                                    doCenterFloat,
+                                   doRaise,
                                    isFullscreen,
+                                   transience,
                                    isDialog)
 import XMonad.Layout.Fullscreen   (fullscreenSupportBorder)
 import XMonad.Layout.Accordion    (Accordion(..))
@@ -57,6 +59,8 @@ main = xmonad $ do
   -- Attributes to modify
   manageHook  =+ composeOne [ isFullscreen -?> doFullFloat
                             , isDialog     -?> doCenterFloat
+                            , transience
+                            , title =? "MaCoPiX" -?> doFloat
                             ]
 
   startupHook =+ safeSpawn "picom" ["--daemon"]
