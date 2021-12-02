@@ -9,7 +9,8 @@ import XMonad.Util.Run            (safeSpawn, safeSpawnProg, unsafeSpawn, runInT
 import XMonad.Util.Loggers
 import XMonad.Util.Cursor         (setDefaultCursor)
 import XMonad.Util.Hacks as Hacks
-import XMonad.Util.WorkspaceCompare (getSortByXineramaRule)
+import XMonad.Util.WorkspaceCompare (getSortByXineramaRule, WorkspaceSort)
+import XMonad.Util.NamedScratchpad
 import XMonad.Prompt
 import XMonad.Prompt.Unicode      (typeUnicodePrompt)
 import XMonad.Prompt.Pass         (passPrompt, passEditPrompt)
@@ -27,12 +28,18 @@ import XMonad.Actions.Search as S (promptSearch,
                                   maps,
                                   google)
 import XMonad.Hooks.ManageDocks   (docks, avoidStruts)
-import XMonad.Hooks.EwmhDesktops  (ewmhFullscreen, ewmh)
+import XMonad.Hooks.EwmhDesktops  (ewmhFullscreen, ewmh, addEwmhWorkspaceSort)
 import XMonad.Hooks.StatusBar     (statusBarPropTo,
                                    StatusBarConfig,
                                    killAllStatusBars,
                                    dynamicSBs)
-import XMonad.Hooks.StatusBar.PP  (xmobarPP, PP(..), wrap, shorten, xmobarColor, xmobarStrip)
+import XMonad.Hooks.StatusBar.PP  (xmobarPP
+                                  , PP(..)
+                                  , wrap
+                                  , shorten
+                                  , xmobarColor
+                                  , xmobarStrip
+                                  , filterOutWsPP)
 import XMonad.Hooks.ManageHelpers (composeOne,
                                    (-?>),
                                    doFullFloat,
@@ -57,6 +64,7 @@ main = xmonad $ do
   clickJustFocuses   =: False
   
   -- Attributes to modify
+  manageHook  =+ namedScratchpadManageHook scratchpads
   manageHook  =+ composeOne [ isFullscreen -?> doFullFloat
                             , isDialog     -?> doCenterFloat
                             , transience
@@ -92,6 +100,7 @@ main = xmonad $ do
     , ("M-i n"      , safeSpawnProg "nyxt-nsfw")
     , ("M-i y"      , safeSpawnProg "youtube")
     , ("M-i m"      , safeSpawnProg "google-meet")
+    , ("M-c s"      , namedScratchpadAction scratchpads "slack")
     ]
 
   keys =+
@@ -115,10 +124,11 @@ main = xmonad $ do
     , ("M-S-q"      , withFocused $ \w -> spawn ("xkill -id " ++ show w))
     , ("<Print>"    , spawn "scrot --focused ~/Pictures/ScreenShots/%F_%H%M%S%Z_window.png --exec 'optipng -o4 $f'")
     , ("M-m s"      , spawn "scrot ~/Pictures/ScreenShots/%F_%H%M%S%Z.png --exec 'optipng -o3 $f'")
+    , ("M-m t"      , namedScratchpadAction scratchpads "htop")
     , ("M-m r"      , unsafeSpawn "xmonad --restart")
     , ("M-m q"      , io exitSuccess)
     ]
-    
+
   withScreens $ do
     sKeys    =: ["r", "s", "t"]
 
@@ -149,7 +159,7 @@ xmobarSub2 :: StatusBarConfig
 xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" ("xmobar --screen=2 $HOME/.config/xmobar/xmobarrc_sub2" ++ myXmobarFont) (pure $ xmobarMainPP 2)
  
 xmobarMainPP :: ScreenId -> PP
-xmobarMainPP = \s -> xmobarPP
+xmobarMainPP = \s -> filterOutWsPP [scratchpadWorkspaceTag] xmobarPP
   { ppOrder  = \(ws:_:_:xs) -> ws : xs
   , ppSort   = getSortByXineramaRule
   , ppExtras = [ logLayoutOnScreen s
@@ -165,3 +175,10 @@ barSpawner 0 = pure xmobarMain
 barSpawner 1 = pure xmobarSub1
 barSpawner 2 = pure xmobarSub2
 barSpawner _ = mempty
+
+scratchpads =
+  [ NS "htop"  "st -c htop-sp -e htop" (className =? "htop-sp")
+       (customFloating $ W.RationalRect (1/8) (1/8) (3/4) (3/4))
+  , NS "slack" "slack" (className =? "Slack")
+       (customFloating $ W.RationalRect (1/16) (1/16) (7/8) (7/8))
+  ]
