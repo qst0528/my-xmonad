@@ -148,15 +148,12 @@ searchList = [ ("g", S.google)
              , ("d", S.dictionary)
              ]
 
-myXmobarFont :: String
-myXmobarFont = " --font='xft:Noto Sans Mono CJK JP:style=regular:size=12'"
-
 xmobarMain :: StatusBarConfig
-xmobarMain = statusBarPropTo "_XMONAD_LOG_0" ("xmobar --screen=0 $HOME/.config/xmobar/xmobarrc_main" ++ myXmobarFont) (pure $ xmobarMainPP 0)
+xmobarMain = statusBarPropTo "_XMONAD_LOG_0" ("xmobar --screen=0 $HOME/.config/xmobar/xmobarrc_main") (pure $ xmobarMainPP 0)
 xmobarSub1 :: StatusBarConfig
-xmobarSub1 = statusBarPropTo "_XMONAD_LOG_1" ("xmobar --screen=1 $HOME/.config/xmobar/xmobarrc_sub1" ++ myXmobarFont) (pure $ xmobarMainPP 1)
+xmobarSub1 = statusBarPropTo "_XMONAD_LOG_1" ("xmobar --screen=1 $HOME/.config/xmobar/xmobarrc_sub1") (pure $ xmobarMainPP 1)
 xmobarSub2 :: StatusBarConfig
-xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" ("xmobar --screen=2 $HOME/.config/xmobar/xmobarrc_sub2" ++ myXmobarFont) (pure $ xmobarMainPP 2)
+xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" ("xmobar --screen=2 $HOME/.config/xmobar/xmobarrc_sub2") (pure $ xmobarMainPP 2)
  
 xmobarMainPP :: ScreenId -> PP
 xmobarMainPP = \s -> filterOutWsPP [scratchpadWorkspaceTag] xmobarPP
