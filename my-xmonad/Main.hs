@@ -127,6 +127,7 @@ main = xmonad $ do
     , ("<Print>"    , spawn "scrot --focused ~/Pictures/ScreenShots/%F_%H%M%S%Z_window.png --exec 'optipng -o4 $f'")
     , ("M-m s"      , spawn "scrot ~/Pictures/ScreenShots/%F_%H%M%S%Z.png --exec 'optipng -o3 $f'")
     , ("M-m t"      , namedScratchpadAction scratchpads "htop")
+    , ("M-m f"      , refresh)
     , ("M-m r"      , unsafeSpawn "xmonad --restart")
     , ("M-m q"      , io exitSuccess)
     ]
