@@ -57,7 +57,7 @@ main :: IO ()
 main = xmonad $ do
   -- Attributes to set
   normalBorderColor  =: "#dddddd"
-  focusedBorderColor =: "#ff0000"
+  focusedBorderColor =: "#ff30e0"
   terminal           =: "st"
   modMask            =: mod4Mask
   borderWidth        =: 4
