@@ -49,6 +49,7 @@ import XMonad.Hooks.ManageHelpers (composeOne,
                                    transience,
                                    isDialog)
 import XMonad.Layout.Fullscreen   (fullscreenSupportBorder)
+import XMonad.Layout.Spacing      (Spacing(..), smartSpacingWithEdge)
 import XMonad.Layout.Accordion    (Accordion(..))
 -- import XMonad.Actions.PhysicalScreens (viewScreen, sendToScreen, verticalScreenOrderer)
 
@@ -75,7 +76,7 @@ main = xmonad $ do
   startupHook =+ setDefaultCursor xC_left_ptr
   startupHook =+ killAllStatusBars
 
-  resetLayout $ Tall 1 (3/100) (1/2) ||| Accordion
+  resetLayout $ smartSpacingWithEdge 10 $ Tall 1 (3/100) (1/2) ||| Accordion
   modifyLayout avoidStruts
 
   apply $ fullscreenSupportBorder . ewmhFullscreen . ewmh . docks . Hacks.javaHack
