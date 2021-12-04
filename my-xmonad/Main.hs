@@ -73,6 +73,7 @@ main = xmonad $ do
                             ]
 
   startupHook =+ safeSpawn "picom" ["--daemon"]
+  startupHook =+ safeSpawn "feh" ["--bg-max", "Pictures/Wallpapers/"]
   startupHook =+ setDefaultCursor xC_left_ptr
   startupHook =+ killAllStatusBars
 
