@@ -137,7 +137,7 @@ main = xmonad $ do
 
 myXPConfig :: XPConfig
 myXPConfig = def
-  { font     = "xft:Noto Sans CJK JP:size=12"
+  { font     = "xft:Noto Sans Mono CJK JP:size=12"
   , height   = 64
   , position = CenteredAt 0.3 0.8
   }
