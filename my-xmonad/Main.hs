@@ -27,7 +27,7 @@ import XMonad.Actions.Search as S (promptSearch,
                                   hoogle,
                                   maps,
                                   google)
-import XMonad.Hooks.ManageDocks   (docks, avoidStruts)
+import XMonad.Hooks.ManageDocks   (docks, avoidStruts, ToggleStruts(..))
 import XMonad.Hooks.EwmhDesktops  (ewmhFullscreen, ewmh, addEwmhWorkspaceSort)
 import XMonad.Hooks.StatusBar     (statusBarPropTo,
                                    StatusBarConfig,
@@ -77,8 +77,7 @@ main = xmonad $ do
   startupHook =+ setDefaultCursor xC_left_ptr
   startupHook =+ killAllStatusBars
 
-  resetLayout $ smartSpacingWithEdge 10 $ Tall 1 (3/100) (1/2) ||| Accordion
-  modifyLayout avoidStruts
+  resetLayout $ avoidStruts $ smartSpacingWithEdge 10 $ Tall 1 (3/100) (1/2)
 
   apply $ fullscreenSupportBorder . ewmhFullscreen . ewmh . docks . Hacks.javaHack
 
@@ -110,6 +109,7 @@ main = xmonad $ do
 
   keys =+
     [ ("M-w l"      , sendMessage NextLayout)
+    , ("M-w s"      , sendMessage ToggleStruts)
     , ("M-<Tab>"    , windows W.focusDown)
     , ("M-S-<Tab>"  , windows W.focusUp)
     , ("M-<Return>" , windows W.shiftMaster)
