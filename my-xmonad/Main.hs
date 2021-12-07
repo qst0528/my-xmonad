@@ -71,11 +71,10 @@ main = xmonad $ do
                             , transience
                             , title =? "MaCoPiX" -?> doFloat
                             ]
-
-  startupHook =+ safeSpawn "picom" ["--daemon"]
-  startupHook =+ safeSpawn "feh" ["--bg-max", "Pictures/Wallpapers/"]
   startupHook =+ setDefaultCursor xC_left_ptr
   startupHook =+ killAllStatusBars
+  startupHook =+ safeSpawn "picom" ["-b"]
+  startupHook =+ safeSpawn "feh" ["--bg-max", "Pictures/Wallpapers/"]
 
   resetLayout $ avoidStruts $ smartSpacingWithEdge 10 $ Tall 1 (3/100) (1/2)
 
