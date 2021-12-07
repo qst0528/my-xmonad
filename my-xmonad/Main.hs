@@ -76,7 +76,9 @@ main = xmonad $ do
   startupHook =+ safeSpawn "picom" ["-b"]
   startupHook =+ safeSpawn "feh" ["--bg-max", "Pictures/Wallpapers/"]
 
-  resetLayout $ avoidStruts $ smartSpacingWithEdge 10 $ Tall 1 (3/100) (1/2)
+  resetLayout $ Tall 1 (3/100) (1/2)
+  modifyLayout $ smartSpacingWithEdge 10
+  modifyLayout avoidStruts
 
   apply $ fullscreenSupportBorder . ewmhFullscreen . ewmh . docks . Hacks.javaHack
 
