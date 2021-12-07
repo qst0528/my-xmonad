@@ -117,7 +117,7 @@ main = xmonad $ do
   focusedBorderColor =: "#ff30e0"
   terminal           =: "st"
   modMask            =: mod4Mask
-  borderWidth        =: 4
+  borderWidth        =: 3
   focusFollowsMouse  =: False
   clickJustFocuses   =: False
   
