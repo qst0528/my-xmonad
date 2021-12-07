@@ -5,13 +5,70 @@ import qualified XMonad.StackSet as W
 import System.Exit (exitSuccess)
 
 import XMonad.Config.Prime
+    ( (++),
+      ($),
+      Eq((==)),
+      Fractional((/), fromRational),
+      Num(fromInteger),
+      Show(show),
+      Applicative(pure),
+      Monoid(mempty),
+      Bool(False),
+      IO,
+      String,
+      mod4Mask,
+      xC_left_ptr,
+      (.),
+      io,
+      spawn,
+      (=?),
+      className,
+      doFloat,
+      title,
+      kill,
+      refresh,
+      sendMessage,
+      windows,
+      withFocused,
+      (>>),
+      apply,
+      borderWidth,
+      clickJustFocuses,
+      focusFollowsMouse,
+      focusedBorderColor,
+      keys,
+      manageHook,
+      modMask,
+      modifyLayout,
+      normalBorderColor,
+      resetLayout,
+      sKeys,
+      startupHook,
+      terminal,
+      withScreens,
+      withWorkspaces,
+      wsKeys,
+      xmonad,
+      Default(def),
+      ScreenId,
+      ChangeLayout(NextLayout),
+      Tall(Tall),
+      RemovableClass((=-)),
+      SettableClass((=:)),
+      SummableClass((=+)) )
 import XMonad.Util.Run            (safeSpawn, safeSpawnProg, unsafeSpawn, runInTerm)
-import XMonad.Util.Loggers
+import XMonad.Util.Loggers ( logLayoutOnScreen, logTitlesOnScreen )
 import XMonad.Util.Cursor         (setDefaultCursor)
-import XMonad.Util.Hacks as Hacks
+import XMonad.Util.Hacks as Hacks ( javaHack )
 import XMonad.Util.WorkspaceCompare (getSortByXineramaRule, WorkspaceSort)
 import XMonad.Util.NamedScratchpad
+    ( customFloating,
+      namedScratchpadAction,
+      namedScratchpadManageHook,
+      scratchpadWorkspaceTag,
+      NamedScratchpad(NS) )
 import XMonad.Prompt
+    ( XPConfig(font, height, position), XPPosition(CenteredAt) )
 import XMonad.Prompt.Unicode      (typeUnicodePrompt)
 import XMonad.Prompt.Pass         (passPrompt, passEditPrompt)
 import XMonad.Prompt.RunOrRaise   (runOrRaisePrompt)
@@ -153,11 +210,11 @@ searchList = [ ("g", S.google)
              ]
 
 xmobarMain :: StatusBarConfig
-xmobarMain = statusBarPropTo "_XMONAD_LOG_0" ("xmobar --screen=0 $HOME/.config/xmobar/xmobarrc_main") (pure $ xmobarMainPP 0)
+xmobarMain = statusBarPropTo "_XMONAD_LOG_0" "xmobar --screen=0 $HOME/.config/xmobar/xmobarrc_main" (pure $ xmobarMainPP 0)
 xmobarSub1 :: StatusBarConfig
-xmobarSub1 = statusBarPropTo "_XMONAD_LOG_1" ("xmobar --screen=1 $HOME/.config/xmobar/xmobarrc_sub1") (pure $ xmobarMainPP 1)
+xmobarSub1 = statusBarPropTo "_XMONAD_LOG_1" "xmobar --screen=1 $HOME/.config/xmobar/xmobarrc_sub1" (pure $ xmobarMainPP 1)
 xmobarSub2 :: StatusBarConfig
-xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" ("xmobar --screen=2 $HOME/.config/xmobar/xmobarrc_sub2") (pure $ xmobarMainPP 2)
+xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" "xmobar --screen=2 $HOME/.config/xmobar/xmobarrc_sub2" (pure $ xmobarMainPP 2)
  
 xmobarMainPP :: ScreenId -> PP
 xmobarMainPP = \s -> filterOutWsPP [scratchpadWorkspaceTag] xmobarPP
@@ -177,6 +234,7 @@ barSpawner 1 = pure xmobarSub1
 barSpawner 2 = pure xmobarSub2
 barSpawner _ = mempty
 
+scratchpads :: [NamedScratchpad]
 scratchpads =
   [ NS "htop"  "st -c htop-sp -e htop" (className =? "htop-sp")
        (customFloating $ W.RationalRect (1/8) (1/8) (3/4) (3/4))
