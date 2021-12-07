@@ -1,6 +1,9 @@
 * Usage
 #+begin_src sh
   $ cd ~
+  $ cabal install xmonad
+  $ cabal install xmonad-contrib --lib
+  $ LANG=C cabal install xmobar -fall_extensions
   $ git clone https://github.com/qst0528/my-xmonad.git .xmonad
   $ cd .xmonad
   $ cabal build
