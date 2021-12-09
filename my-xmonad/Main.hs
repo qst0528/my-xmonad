@@ -70,7 +70,7 @@ import XMonad.Util.NamedScratchpad
 import XMonad.Prompt
     ( XPConfig(font, height, position), XPPosition(CenteredAt) )
 import XMonad.Prompt.Unicode      (typeUnicodePrompt)
-import XMonad.Prompt.Pass         (passPrompt, passEditPrompt)
+import XMonad.Prompt.Pass         (passPrompt, passEditPrompt, passGenerateAndCopyPrompt)
 import XMonad.Prompt.RunOrRaise   (runOrRaisePrompt)
 import XMonad.Prompt.Ssh          (sshPrompt)
 import XMonad.Actions.Search as S (promptSearch,
@@ -177,6 +177,7 @@ main = xmonad $ do
   keys =+
     [ ("M-p p"      , passPrompt myXPConfig)
     , ("M-p e"      , passEditPrompt myXPConfig)
+    , ("M-p g"      , passGenerateAndCopyPrompt myXPConfig)
     , ("M-u"        , typeUnicodePrompt "/usr/share/unicode/UnicodeData.txt" myXPConfig)
     ]
     
