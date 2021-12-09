@@ -168,6 +168,7 @@ main = xmonad $ do
   keys =+
     [ ("M-w l"      , sendMessage NextLayout)
     , ("M-w s"      , sendMessage ToggleStruts)
+    , ("M-w f"      , withFocused $ windows . W.sink)
     , ("M-<Tab>"    , windows W.focusDown)
     , ("M-S-<Tab>"  , windows W.focusUp)
     , ("M-<Return>" , windows W.shiftMaster)
