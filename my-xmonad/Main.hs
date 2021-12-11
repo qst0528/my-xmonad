@@ -6,6 +6,7 @@ import System.Exit (exitSuccess)
 
 import XMonad.Config.Prime
     ( (++),
+      (<+>),
       ($),
       Eq((==)),
       Fractional((/), fromRational),
@@ -126,10 +127,11 @@ main = xmonad $ do
   
   -- Attributes to modify
   manageHook  =+ namedScratchpadManageHook scratchpads
-  manageHook  =+ composeOne [ isFullscreen -?> doFullFloat
+  manageHook  =+ composeOne [ isFullscreen -?> (doFullFloat <+> doRaise)
                             , isDialog     -?> doCenterFloat
                             , transience
                             , title =? "MaCoPiX" -?> doFloat
+                            , className =? "Cairo-clock" -?> (hasBorder False <+> doIgnore <+> doLower)
                             ]
   startupHook =+ setDefaultCursor xC_left_ptr
   startupHook =+ killAllStatusBars
