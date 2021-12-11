@@ -14,9 +14,10 @@ import XMonad.Config.Prime
       Show(show),
       Applicative(pure),
       Monoid(mempty),
-      Bool(False),
+      Bool(..),
       IO,
       String,
+      Maybe(..),
       mod4Mask,
       xC_left_ptr,
       (.),
@@ -25,7 +26,9 @@ import XMonad.Config.Prime
       (=?),
       className,
       doFloat,
+      doIgnore,
       title,
+      appName,
       kill,
       refresh,
       sendMessage,
@@ -49,6 +52,7 @@ import XMonad.Config.Prime
       withScreens,
       withWorkspaces,
       wsKeys,
+      wsNames,
       xmonad,
       Default(def),
       ScreenId,
@@ -56,14 +60,15 @@ import XMonad.Config.Prime
       Tall(Tall),
       RemovableClass((=-)),
       SettableClass((=:)),
-      SummableClass((=+)) )
+      SummableClass((=+)), addLayout )
 import XMonad.Util.Run            (safeSpawn, safeSpawnProg, unsafeSpawn, runInTerm)
-import XMonad.Util.Loggers ( logLayoutOnScreen, logTitlesOnScreen )
+import XMonad.Util.Loggers ( logLayoutOnScreen, logTitlesOnScreen, logWhenActive, logConst )
 import XMonad.Util.Cursor         (setDefaultCursor)
 import XMonad.Util.Hacks as Hacks ( javaHack )
 import XMonad.Util.WorkspaceCompare (getSortByXineramaRule, WorkspaceSort)
 import XMonad.Util.NamedScratchpad
     ( customFloating,
+      nonFloating,
       namedScratchpadAction,
       namedScratchpadManageHook,
       scratchpadWorkspaceTag,
@@ -74,6 +79,13 @@ import XMonad.Prompt.Unicode      (typeUnicodePrompt)
 import XMonad.Prompt.Pass         (passPrompt, passEditPrompt, passGenerateAndCopyPrompt)
 import XMonad.Prompt.RunOrRaise   (runOrRaisePrompt)
 import XMonad.Prompt.Ssh          (sshPrompt)
+import XMonad.Prompt.Man          (manPrompt)
+import XMonad.Actions.GridSelect  (gridselectWorkspace, HasColorizer (defaultColorizer))
+import XMonad.Actions.DynamicProjects (dynamicProjects,
+                                       shiftToProjectPrompt,
+                                       switchProjectPrompt,
+                                       Project(..))
+import XMonad.Actions.CycleWS (moveTo, hiddenWS, emptyWS, WSType(..), Direction1D(..))
 import XMonad.Actions.Search as S (promptSearch,
                                   selectSearch,
                                   SearchEngine,
@@ -103,6 +115,7 @@ import XMonad.Hooks.ManageHelpers (composeOne,
                                    doFullFloat,
                                    doCenterFloat,
                                    doRaise,
+                                   doLower,
                                    isFullscreen,
                                    transience,
                                    isDialog)
@@ -112,6 +125,7 @@ import XMonad.Layout.Spacing      (Spacing(..), spacingRaw, Border(..))
 import XMonad.Layout.Accordion    (Accordion(..))
 import XMonad.Layout.NoBorders (hasBorder)
 import XMonad.Layout.Gaps (gaps, Gaps(..), Direction2D(..))
+import XMonad.Util.NamedWindows (getName)
 -- import XMonad.Actions.PhysicalScreens (viewScreen, sendToScreen, verticalScreenOrderer)
 
 main :: IO ()
@@ -135,8 +149,10 @@ main = xmonad $ do
                             ]
   startupHook =+ setDefaultCursor xC_left_ptr
   startupHook =+ killAllStatusBars
+  startupHook =+ safeSpawn "tmux" ["start-server"]
   startupHook =+ safeSpawn "picom" ["-b"]
   startupHook =+ safeSpawn "feh" ["--bg-max", "Pictures/Wallpapers/"]
+  startupHook =+ safeSpawn "bash" [".xmonad/host-specific.sh"]
 
   resetLayout $ Tall 1 (3/100) (1/2)
   addLayout $ gaps [ (R, 630) ] $ Tall 1 (3/100) (1/2)
@@ -145,10 +161,12 @@ main = xmonad $ do
   modifyLayout avoidStruts
 
   apply $ dynamicSBs barSpawner
+  apply $ dynamicProjects projects
 
   withWorkspaces $ do
 --    wsNames =: ["🀐", "🀑", "🀒", "🀓", "🀔", "🀕", "🀖", "🀗", "🀘"]
-    wsKeys =: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
+    wsKeys  =: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
+    wsNames =: ["dashboard", "scratch", "web-personal"]
 
   keys =- ["M-<Space>"]
   keys =+
@@ -163,32 +181,45 @@ main = xmonad $ do
     , ("M-i w"      , safeSpawnProg "nyxt-work")
     , ("M-i n"      , safeSpawnProg "nyxt-nsfw")
     , ("M-i y"      , safeSpawnProg "youtube")
-    , ("M-i m"      , safeSpawnProg "google-meet")
-    , ("M-c s"      , namedScratchpadAction scratchpads "slack")
+    , ("M-i c"      , safeSpawnProg "chromium")
     ]
 
   keys =+
     [ ("M-l " ++ k  , S.promptSearch myXPConfig f) | (k, f) <- searchList ]
 
   keys =+
+    [ ("M-c m"      , safeSpawnProg "google-meet")
+    , ("M-c s"      , namedScratchpadAction scratchpads "slack")
+    ]
+
+  keys =+
+    [ ("M-g"        , gridselectWorkspace def W.greedyView)
+    ]
+
+  keys =+
     [ ("M-w l"      , sendMessage NextLayout)
     , ("M-w s"      , sendMessage ToggleStruts)
     , ("M-w f"      , withFocused $ windows . W.sink)
+    , ("M-f"        , moveTo Next (hiddenWS :&: Not emptyWS))
+    , ("M-b"        , moveTo Prev (hiddenWS :&: Not emptyWS))
+    , ("M-n"        , switchProjectPrompt myXPConfig)
+    , ("M-S-n"      , shiftToProjectPrompt myXPConfig)
     , ("M-<Tab>"    , windows W.focusDown)
     , ("M-S-<Tab>"  , windows W.focusUp)
     , ("M-<Return>" , windows W.shiftMaster)
     ]
 
-  keys =+
-    [ ("M-p p"      , passPrompt myXPConfig)
-    , ("M-p e"      , passEditPrompt myXPConfig)
-    , ("M-p g"      , passGenerateAndCopyPrompt myXPConfig)
-    , ("M-u"        , typeUnicodePrompt "/usr/share/unicode/UnicodeData.txt" myXPConfig)
-    ]
+  keys =+ 
+   [ ("M-p p"      , passPrompt myXPConfig)
+   , ("M-p e"      , passEditPrompt myXPConfig)
+   , ("M-p g"      , passGenerateAndCopyPrompt myXPConfig)
+   , ("M-u"        , typeUnicodePrompt "/usr/share/unicode/UnicodeData.txt" myXPConfig)
+   ]
     
   keys =+
     [ ("M-q"        , kill)
     , ("M-S-q"      , withFocused $ \w -> spawn ("xkill -id " ++ show w))
+    , ("M-h m"      , manPrompt myXPConfig)
     , ("<Print>"    , spawn "scrot --focused ~/Pictures/ScreenShots/%F_%H%M%S%Z_window.png --exec 'optipng -o4 $f'")
     , ("M-m s"      , spawn "scrot ~/Pictures/ScreenShots/%F_%H%M%S%Z.png --exec 'optipng -o3 $f'")
     , ("M-m t"      , namedScratchpadAction scratchpads "htop")
@@ -203,7 +234,7 @@ main = xmonad $ do
 myXPConfig :: XPConfig
 myXPConfig = def
   { font     = "xft:Noto Sans Mono CJK JP:size=12"
-  , height   = 64
+  , height   = 56
   , position = CenteredAt 0.3 0.8
   }
 
@@ -228,6 +259,7 @@ xmobarMainPP = \s -> filterOutWsPP [scratchpadWorkspaceTag] xmobarPP
   { ppOrder  = \(ws:_:_:xs) -> ws : xs
   , ppSort   = getSortByXineramaRule
   , ppExtras = [ logLayoutOnScreen s
+               , logWhenActive s (logConst "*")
                , logTitlesOnScreen s formatFocused formatUnfocused
                ]
   }
@@ -245,6 +277,41 @@ scratchpads :: [NamedScratchpad]
 scratchpads =
   [ NS "htop"  "st -c htop-sp -e htop" (className =? "htop-sp")
        (customFloating $ W.RationalRect (1/8) (1/8) (3/4) (3/4))
-  , NS "slack" "slack" (className =? "Slack")
-       (customFloating $ W.RationalRect (1/16) (1/16) (7/8) (7/8))
+  , NS "slack" "slack" (className =? "Slack") nonFloating
+  ]
+
+projects :: [Project]
+projects =
+  [ Project { projectName      = "scratch"
+            , projectDirectory = "~"
+            , projectStartHook = Nothing
+            }
+  , Project { projectName      = "dashboard"
+            , projectDirectory = "~"
+            , projectStartHook = Just $ do spawn ".xmonad/dashboard"
+            }
+  , Project { projectName      = "web-personal"
+            , projectDirectory = "~/Downloads"
+            , projectStartHook = Just $ do spawn "nyxt-personal"
+            }
+  , Project { projectName      = "web-work"
+            , projectDirectory = "~/work"
+            , projectStartHook = Just $ do spawn "nyxt-work"
+            }
+  , Project { projectName      = "web-nsfw"
+            , projectDirectory = "~/Downloads"
+            , projectStartHook = Just $ do spawn "nyxt-nsfw"
+            }
+  , Project { projectName      = "gimp"
+            , projectDirectory = "~/Pictures"
+            , projectStartHook = Just $ do spawn "gimp"
+            }
+  , Project { projectName      = "notion"
+            , projectDirectory = "~/work"
+            , projectStartHook = Just $ do spawn "notion-app-nativefier"
+            }
+  , Project { projectName      = "game"
+            , projectDirectory = "~/Games"
+            , projectStartHook = Nothing
+            }
   ]

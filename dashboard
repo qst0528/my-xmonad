@@ -1,0 +1,15 @@
+#!/bin/bash
+zen ()
+{
+killall cairo-clock macopix
+
+cairo-clock --xposition=3170 --yposition=420 --width=720 --height=720 --theme=radium &
+macopix &
+}
+
+case $(hostnamectl hostname) in
+    "zen" )
+	zen
+	;;
+esac
+
