@@ -150,7 +150,7 @@ main = xmonad $ do
   startupHook =+ setDefaultCursor xC_left_ptr
   startupHook =+ killAllStatusBars
   startupHook =+ safeSpawn "tmux" ["start-server"]
-  startupHook =+ safeSpawn "picom" ["-b"]
+  startupHook =+ safeSpawn "picom" ["-b", "--experimental-backends"]
   startupHook =+ safeSpawn "feh" ["--bg-max", "Pictures/Wallpapers/"]
   startupHook =+ safeSpawn "bash" [".xmonad/host-specific.sh"]
 
