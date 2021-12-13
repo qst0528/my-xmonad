@@ -215,16 +215,18 @@ main = xmonad $ do
    , ("M-p g"      , passGenerateAndCopyPrompt myXPConfig)
    , ("M-u"        , typeUnicodePrompt "/usr/share/unicode/UnicodeData.txt" myXPConfig)
    ]
-    
+
   keys =+
     [ ("M-q"        , kill)
     , ("M-S-q"      , withFocused $ \w -> spawn ("xkill -id " ++ show w))
     , ("M-h m"      , manPrompt myXPConfig)
     , ("<Print>"    , spawn "scrot --focused ~/Pictures/ScreenShots/%F_%H%M%S%Z_window.png --exec 'optipng -o4 $f'")
     , ("M-m s"      , spawn "scrot ~/Pictures/ScreenShots/%F_%H%M%S%Z.png --exec 'optipng -o3 $f'")
-    , ("<F6>"       , spawn "pavol --toggle")
-    , ("<F7>"       , spawn "pavol --unmute --volume=lower")
-    , ("<F8>"       , spawn "pavol --unmute --volume=raise")
+    , ("<F4>"       , safeSpawn "brightness-ddc" ["--set=down"])
+    , ("<F5>"       , safeSpawn "brightness-ddc" ["--set=up"])
+    , ("<F6>"       , safeSpawn "pavol" ["--toggle"])
+    , ("<F7>"       , safeSpawn "pavol" ["--unmute", "--volume=lower"])
+    , ("<F8>"       , safeSpawn "pavol" ["--unmute", "--volume=raise"])
     , ("M-m t"      , namedScratchpadAction scratchpads "htop")
     , ("M-m f"      , refresh)
     , ("M-m r"      , unsafeSpawn "xmonad --restart")
