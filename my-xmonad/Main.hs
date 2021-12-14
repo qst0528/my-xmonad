@@ -60,7 +60,7 @@ import XMonad.Config.Prime
       Tall(Tall),
       RemovableClass((=-)),
       SettableClass((=:)),
-      SummableClass((=+)), addLayout )
+      SummableClass((=+)), addLayout, handleEventHook )
 import XMonad.Util.Run            (safeSpawn, safeSpawnProg, unsafeSpawn, runInTerm)
 import XMonad.Util.Loggers ( logLayoutOnScreen, logTitlesOnScreen, logWhenActive, logConst )
 import XMonad.Util.Cursor         (setDefaultCursor)
@@ -125,6 +125,7 @@ import XMonad.Layout.Spacing      (Spacing(..), spacingRaw, Border(..))
 import XMonad.Layout.Accordion    (Accordion(..))
 import XMonad.Layout.NoBorders (hasBorder)
 import XMonad.Layout.Gaps (gaps, Gaps(..), Direction2D(..))
+import XMonad.Layout.LayoutHints (layoutHints, layoutHintsWithPlacement, hintsEventHook)
 import XMonad.Util.NamedWindows (getName)
 -- import XMonad.Actions.PhysicalScreens (viewScreen, sendToScreen, verticalScreenOrderer)
 
@@ -154,10 +155,13 @@ main = xmonad $ do
   startupHook =+ safeSpawn "feh" ["--bg-max", "Pictures/Wallpapers/"]
   startupHook =+ safeSpawn "bash" [".xmonad/host-specific.sh"]
 
+  handleEventHook =+ hintsEventHook
+
   resetLayout $ Tall 1 (3/100) (1/2)
   addLayout $ gaps [ (R, 630) ] $ Tall 1 (3/100) (1/2)
   apply $ fullscreenSupportBorder . ewmhFullscreen . ewmh . docks . Hacks.javaHack
   modifyLayout $ spacingRaw True (Border 10 10 10 10) True (Border 10 10 10 10) True
+  modifyLayout $ layoutHintsWithPlacement (0.5, 0.5)
   modifyLayout avoidStruts
 
   apply $ dynamicSBs barSpawner
