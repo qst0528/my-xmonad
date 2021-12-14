@@ -295,15 +295,15 @@ projects =
             , projectDirectory = "~"
             , projectStartHook = Just $ do spawn ".xmonad/dashboard"
             }
-  , Project { projectName      = "web-personal"
+  , Project { projectName      = "personal"
             , projectDirectory = "~/Downloads"
             , projectStartHook = Just $ do spawn "nyxt-personal"
             }
-  , Project { projectName      = "web-work"
+  , Project { projectName      = "work"
             , projectDirectory = "~/work"
             , projectStartHook = Just $ do spawn "nyxt-work"
             }
-  , Project { projectName      = "web-nsfw"
+  , Project { projectName      = "nsfw"
             , projectDirectory = "~/Downloads"
             , projectStartHook = Just $ do spawn "nyxt-nsfw"
             }
