@@ -148,6 +148,7 @@ main = xmonad $ do
                             , isDialog     -?> doCenterFloat
                             , transience
                             , title =? "MaCoPiX" -?> doFloat
+                            , className =? "guvcview" -?> doFloat
                             , className =? "Cairo-clock" -?> (hasBorder False <+> doIgnore <+> doLower)
                             ]
   startupHook =+ setDefaultCursor xC_left_ptr
