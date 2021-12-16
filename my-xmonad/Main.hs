@@ -89,6 +89,7 @@ import XMonad.Actions.DynamicProjects (dynamicProjects,
 import XMonad.Actions.CycleWS (moveTo, hiddenWS, emptyWS, WSType(..), Direction1D(..))
 import XMonad.Actions.Search as S (promptSearch,
                                   selectSearch,
+                                  searchEngine,
                                   SearchEngine,
                                   wikipedia,
                                   github,
@@ -192,6 +193,8 @@ main = xmonad $ do
 
   keys =+
     [ ("M-l " ++ k  , S.promptSearch myXPConfig f) | (k, f) <- searchList ]
+  keys =+
+    [ ("M-S-l"    , S.selectSearch google) ]
 
   keys =+
     [ ("M-c m"      , safeSpawnProg "google-meet")
@@ -252,10 +255,12 @@ myXPConfig = def
 searchList :: [(String, S.SearchEngine)]
 searchList = [ ("g", S.google)
              , ("h", S.hoogle)
+             , ("S-g", S.github)
              , ("w", S.wikipedia)
              , ("a", S.amazon)
              , ("e", S.ebay)
              , ("d", S.dictionary)
+             , ("S-a", S.searchEngine "archwiki" "https://wiki.archlinux.org/index.php?search=")
              ]
 
 xmobarMain :: StatusBarConfig
