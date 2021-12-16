@@ -172,7 +172,7 @@ main = xmonad $ do
   withWorkspaces $ do
 --    wsNames =: ["🀐", "🀑", "🀒", "🀓", "🀔", "🀕", "🀖", "🀗", "🀘"]
     wsKeys  =: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
-    wsNames =: ["dashboard", "scratch", "web-personal"]
+    wsNames =: ["dashboard", "scratch", "personal", "nsfw"]
 
   keys =- ["M-<Space>"]
   keys =+
