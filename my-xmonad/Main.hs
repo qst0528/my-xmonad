@@ -64,6 +64,7 @@ import XMonad.Config.Prime
 import XMonad.Util.Run            (safeSpawn, safeSpawnProg, unsafeSpawn, runInTerm)
 import XMonad.Util.Loggers ( logLayoutOnScreen, logTitlesOnScreen, logWhenActive, logConst )
 import XMonad.Util.Cursor         (setDefaultCursor)
+import XMonad.Util.Paste          (pasteSelection)
 import XMonad.Util.Hacks as Hacks ( javaHack )
 import XMonad.Util.WorkspaceCompare (getSortByXineramaRule, WorkspaceSort)
 import XMonad.Util.NamedScratchpad
@@ -178,6 +179,7 @@ main = xmonad $ do
     , ("M-S-v"      , sshPrompt myXPConfig)
     , ("M-e"        , safeSpawn "emacsclient" ["--create-frame", "--eval", "(dired \"~\")"])
     , ("M-x"        , runOrRaisePrompt myXPConfig)
+    , ("M-y"        , pasteSelection)
     ]
 
   keys =+
