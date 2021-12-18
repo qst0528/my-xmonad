@@ -1,15 +1,11 @@
-#!/bin/bash
-zen ()
-{
-killall cairo-clock macopix
+#!/bin/fish
+function dashboard-desktop
+    killall cairo-clock macopix
+    cairo-clock --xposition=3170 --yposition=420 --width=720 --height=720 --theme=radium &
+    macopix &
+    youtube &
+end
 
-cairo-clock --xposition=3170 --yposition=420 --width=720 --height=720 --theme=radium &
-macopix &
-youtube &
-}
-
-case $(hostnamectl hostname) in
-    "zen" )
-	zen
-	;;
-esac
+if on-hosts zen
+	dashboard-desktop
+end

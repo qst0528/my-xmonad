@@ -1,2 +1,2 @@
-#!/bin/bash
+#!/bin/fish
 exit 0
