@@ -174,7 +174,7 @@ main = xmonad $ do
   withWorkspaces $ do
 --    wsNames =: ["🀐", "🀑", "🀒", "🀓", "🀔", "🀕", "🀖", "🀗", "🀘"]
     wsKeys  =: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
-    wsNames =: ["dashboard", "scratch", "personal", "nsfw"]
+    wsNames =: ["dashboard", "scratch", "learning", "personal", "nsfw"]
 
   keys =- ["M-<Space>"]
   keys =+
@@ -301,7 +301,7 @@ scratchpads =
 projects :: [Project]
 projects =
   [ Project { projectName      = "scratch"
-            , projectDirectory = "~"
+            , projectDirectory = "~/scratch"
             , projectStartHook = Nothing
             }
   , Project { projectName      = "dashboard"
@@ -312,6 +312,10 @@ projects =
             , projectDirectory = "~/Downloads"
             , projectStartHook = Just $ do spawn "nyxt-personal"
             }
+  , Project { projectName      = "learning"
+            , projectDirectory = "~/learning"
+            , projectStartHook = Just $ do safeSpawn "emacsclient" ["--create-frame", "--eval", "(dired \".\")"]
+            }
   , Project { projectName      = "work"
             , projectDirectory = "~/work"
             , projectStartHook = Just $ do spawn "nyxt-work"
@@ -320,7 +324,7 @@ projects =
             , projectDirectory = "~/Downloads"
             , projectStartHook = Just $ do spawn "nyxt-nsfw"
             }
-  , Project { projectName      = "gimp"
+  , Project { projectName      = "image"
             , projectDirectory = "~/Pictures"
             , projectStartHook = Just $ do spawn "gimp"
             }
