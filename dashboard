@@ -1,7 +1,7 @@
 #!/bin/fish
 function dashboard-desktop
     killall cairo-clock macopix
-    cairo-clock --xposition=3170 --yposition=420 --width=720 --height=720 --theme=radium &
+    cairo-clock --xposition=7010 --yposition=420 --width=720 --height=720 --theme=radium &
     macopix &
     youtube &
 end
