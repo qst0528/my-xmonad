@@ -154,7 +154,7 @@ main = xmonad $ do
   startupHook =+ setDefaultCursor xC_left_ptr
   startupHook =+ killAllStatusBars
   startupHook =+ safeSpawn "tmux" ["start-server"]
-  startupHook =+ safeSpawn "emacs" ["--bg-daemon"]
+  startupHook =+ safeSpawn "emacs" ["--fg-daemon"]
   startupHook =+ safeSpawn "picom" ["-b", "--experimental-backends"]
   startupHook =+ safeSpawn "feh" ["--bg-max", "Pictures/Wallpapers/"]
   startupHook =+ safeSpawn "bash" [".xmonad/host-specific.sh"]
@@ -180,7 +180,7 @@ main = xmonad $ do
   keys =+
     [ ("M-v"        , runInTerm "" "tmux new-session")
     , ("M-S-v"      , sshPrompt myXPConfig)
-    , ("M-e"        , safeSpawn "emacsclient" ["--create-frame", "--eval", "(dired \"~\")"])
+    , ("M-e"        , safeSpawn "emacsclient" ["--create-frame", "--eval", "(dired \".\")"])
     , ("M-x"        , runOrRaisePrompt myXPConfig)
     , ("M-y"        , pasteSelection)
     ]
