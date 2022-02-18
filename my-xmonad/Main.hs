@@ -82,7 +82,7 @@ import XMonad.Prompt.Pass         (passPrompt, passEditPrompt, passGenerateAndCo
 import XMonad.Prompt.RunOrRaise   (runOrRaisePrompt)
 import XMonad.Prompt.Ssh          (sshPrompt)
 import XMonad.Prompt.Man          (manPrompt)
-import XMonad.Actions.GridSelect  (gridselectWorkspace, HasColorizer (defaultColorizer))
+import XMonad.Actions.GridSelect  (gridselectWorkspace, HasColorizer (defaultColorizer), GSConfig(..), buildDefaultGSConfig)
 import XMonad.Actions.DynamicProjects (dynamicProjects,
                                        shiftToProjectPrompt,
                                        switchProjectPrompt,
@@ -177,7 +177,7 @@ main = xmonad $ do
   withWorkspaces $ do
 --    wsNames =: ["🀐", "🀑", "🀒", "🀓", "🀔", "🀕", "🀖", "🀗", "🀘"]
     wsKeys  =: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
-    wsNames =: ["dashboard", "scratch", "learning", "personal", "nsfw"]
+    wsNames =: ["dashboard", "scratch", "learning", "personal", "nsfw", "work", "notion"]
 
   keys =- ["M-<Space>"]
   keys =+
@@ -211,7 +211,7 @@ main = xmonad $ do
     ]
 
   keys =+
-    [ ("M-g"        , gridselectWorkspace def W.greedyView)
+    [ ("M-g"        , gridselectWorkspace myGSConfig W.greedyView)
     ]
 
   keys =+
@@ -253,6 +253,12 @@ main = xmonad $ do
 
   withScreens $ do
     sKeys    =: ["r", "s", "t"]
+
+myGSConfig = def
+  { gs_font        = "xft:Noto Sans Mono CJK JP:size=12"
+  , gs_cellheight  = 64
+  , gs_cellwidth   = 180
+  }
 
 myXPConfig :: XPConfig
 myXPConfig = def
