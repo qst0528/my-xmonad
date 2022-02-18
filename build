@@ -4,5 +4,5 @@ set -eu
 cd $HOME/.xmonad
 
 cabal build --verbose=2
-cabal install --installdir=. --verbose=0
+cabal install --installdir=. --verbose=0 --overwrite-policy=always
 mv xmonad "$1"

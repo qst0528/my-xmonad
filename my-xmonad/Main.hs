@@ -2,9 +2,8 @@
 
 import qualified XMonad.StackSet as W
 
-import System.Exit (exitSuccess)
 import System.Taffybar.Support.PagerHints (pagerHints)
-
+import System.Exit (exitSuccess)
 import XMonad.Config.Prime
     ( (++),
       (<+>),
@@ -169,7 +168,7 @@ main = xmonad $ do
   apply $ pagerHints . fullscreenSupportBorder . ewmhFullscreen . ewmh . docks . Hacks.javaHack
   modifyLayout $ spacingRaw True (Border 10 10 10 10) True (Border 10 10 10 10) True
   modifyLayout $ layoutHintsWithPlacement (0.5, 0.5)
-  modifyLayout avoidStruts
+  modifyLayout $ avoidStruts
 
   apply $ dynamicSBs barSpawner
   apply $ dynamicProjects projects
@@ -284,8 +283,6 @@ xmobarSub1 :: StatusBarConfig
 xmobarSub1 = statusBarPropTo "_XMONAD_LOG_1" "xmobar --screen=1 $HOME/.config/xmobar/xmobarrc_sub1" (pure $ xmobarMainPP 1)
 xmobarSub2 :: StatusBarConfig
 xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" "xmobar --screen=2 $HOME/.config/xmobar/xmobarrc_sub2" (pure $ xmobarMainPP 2)
-taffyBarMain :: StatusBarConfig
-taffyBarMain = statusBarProp "taffybar" (pure $ xmobarMainPP 0)
 taffyBar :: ScreenId -> StatusBarConfig
 taffyBar = \n -> statusBarProp "taffybar" (pure $ xmobarMainPP n)
 
@@ -303,13 +300,9 @@ xmobarMainPP = \s -> filterOutWsPP [scratchpadWorkspaceTag] xmobarPP
     formatUnfocused = wrap "(" ")" . xmobarColor "#bd93f9" "" . shorten 35 . xmobarStrip
 
 barSpawner :: ScreenId -> IO StatusBarConfig
-{-
-barSpawner 0 = pure xmobarMain
-barSpawner 1 = pure xmobarSub1
-barSpawner 2 = pure xmobarSub2
-barSpawner _ = mempty
--}
-barSpawner n = pure (taffyBar n)
+barSpawner 0 = pure (taffyBar 0)
+barSpawner 1 = pure (taffyBar 1)
+barSpawner 2 = pure (taffyBar 2)
 barSpawner _ = mempty
 
 scratchpads :: [NamedScratchpad]
