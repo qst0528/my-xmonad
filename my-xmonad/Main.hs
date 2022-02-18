@@ -3,6 +3,7 @@
 import qualified XMonad.StackSet as W
 
 import System.Exit (exitSuccess)
+import System.Taffybar.Support.PagerHints (pagerHints)
 
 import XMonad.Config.Prime
     ( (++),
@@ -102,6 +103,7 @@ import XMonad.Actions.Search as S (promptSearch,
 import XMonad.Hooks.ManageDocks   (docks, avoidStruts, ToggleStruts(..))
 import XMonad.Hooks.EwmhDesktops  (ewmhFullscreen, ewmh, addEwmhWorkspaceSort)
 import XMonad.Hooks.StatusBar     (statusBarPropTo,
+                                   statusBarProp,
                                    StatusBarConfig,
                                    killAllStatusBars,
                                    dynamicSBs)
@@ -138,7 +140,7 @@ main = xmonad $ do
   focusedBorderColor =: "#ff30e0"
   terminal           =: "st"
   modMask            =: mod4Mask
-  borderWidth        =: 3
+  borderWidth        =: 4
   focusFollowsMouse  =: False
   clickJustFocuses   =: False
   
@@ -148,6 +150,7 @@ main = xmonad $ do
                             , isDialog     -?> doCenterFloat
                             , transience
                             , title =? "MaCoPiX" -?> doFloat
+                            , className =? "Xmessage" -?> doFloat
                             , className =? "guvcview" -?> doFloat
                             , className =? "Cairo-clock" -?> (hasBorder False <+> doIgnore <+> doLower)
                             ]
@@ -163,7 +166,7 @@ main = xmonad $ do
 
   resetLayout $ Tall 1 (3/100) (1/2)
   addLayout $ gaps [ (R, 630) ] $ Tall 1 (3/100) (1/2)
-  apply $ fullscreenSupportBorder . ewmhFullscreen . ewmh . docks . Hacks.javaHack
+  apply $ pagerHints . fullscreenSupportBorder . ewmhFullscreen . ewmh . docks . Hacks.javaHack
   modifyLayout $ spacingRaw True (Border 10 10 10 10) True (Border 10 10 10 10) True
   modifyLayout $ layoutHintsWithPlacement (0.5, 0.5)
   modifyLayout avoidStruts
@@ -187,8 +190,12 @@ main = xmonad $ do
 
   keys =+
     [ ("M-i p"      , safeSpawnProg "nyxt-personal")
+    , ("M-i S-p"    , safeSpawn "chromium" ["--profile-directory=Profile 2"])
     , ("M-i w"      , safeSpawnProg "nyxt-work")
+    , ("M-i S-w"    , safeSpawn "chromium" ["--profile-directory=Default"])
     , ("M-i n"      , safeSpawnProg "nyxt-nsfw")
+    , ("M-i S-n"    , safeSpawn "chromium" ["--profile-directory=Profile 1"])
+    , ("M-i S-a"    , safeSpawn "chromium" ["--profile-directory=Profile 3"])
     , ("M-i y"      , safeSpawnProg "youtube")
     , ("M-i c"      , safeSpawnProg "chromium")
     ]
@@ -233,11 +240,11 @@ main = xmonad $ do
     , ("M-h m"      , manPrompt myXPConfig)
     , ("<Print>"    , spawn "scrot --focused ~/Pictures/ScreenShots/%F_%H%M%S%Z_window.png --exec 'optipng -o4 $f'")
     , ("M-m s"      , spawn "scrot ~/Pictures/ScreenShots/%F_%H%M%S%Z.png --exec 'optipng -o3 $f'")
-    , ("<F4>"       , safeSpawn "brightness-ddc" ["--down=10"])
+    , ("<F6>"       , safeSpawn "brightness-ddc" ["--down=10"])
     , ("<F5>"       , safeSpawn "brightness-ddc" ["--up=10"])
-    , ("<F6>"       , safeSpawn "pavol" ["--toggle"])
-    , ("<F7>"       , safeSpawn "pavol" ["--unmute", "--volume=lower"])
-    , ("<F8>"       , safeSpawn "pavol" ["--unmute", "--volume=raise"])
+    , ("<XF86AudioMute>"       , safeSpawn "pavol" ["--toggle"])
+    , ("<XF86AudioLowerVolume>"       , safeSpawn "pavol" ["--unmute", "--volume=lower"])
+    , ("<XF86AudioRaiseVolume>"       , safeSpawn "pavol" ["--unmute", "--volume=raise"])
     , ("M-m t"      , namedScratchpadAction scratchpads "htop")
     , ("M-m f"      , refresh)
     , ("M-m r"      , unsafeSpawn "xmonad --restart")
@@ -271,7 +278,11 @@ xmobarSub1 :: StatusBarConfig
 xmobarSub1 = statusBarPropTo "_XMONAD_LOG_1" "xmobar --screen=1 $HOME/.config/xmobar/xmobarrc_sub1" (pure $ xmobarMainPP 1)
 xmobarSub2 :: StatusBarConfig
 xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" "xmobar --screen=2 $HOME/.config/xmobar/xmobarrc_sub2" (pure $ xmobarMainPP 2)
- 
+taffyBarMain :: StatusBarConfig
+taffyBarMain = statusBarProp "taffybar" (pure $ xmobarMainPP 0)
+taffyBar :: ScreenId -> StatusBarConfig
+taffyBar = \n -> statusBarProp "taffybar" (pure $ xmobarMainPP n)
+
 xmobarMainPP :: ScreenId -> PP
 xmobarMainPP = \s -> filterOutWsPP [scratchpadWorkspaceTag] xmobarPP
   { ppOrder  = \(ws:_:_:xs) -> ws : xs
@@ -286,9 +297,13 @@ xmobarMainPP = \s -> filterOutWsPP [scratchpadWorkspaceTag] xmobarPP
     formatUnfocused = wrap "(" ")" . xmobarColor "#bd93f9" "" . shorten 35 . xmobarStrip
 
 barSpawner :: ScreenId -> IO StatusBarConfig
+{-
 barSpawner 0 = pure xmobarMain
 barSpawner 1 = pure xmobarSub1
 barSpawner 2 = pure xmobarSub2
+barSpawner _ = mempty
+-}
+barSpawner n = pure (taffyBar n)
 barSpawner _ = mempty
 
 scratchpads :: [NamedScratchpad]

@@ -27,9 +27,22 @@ executable xmonad
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
-    build-depends: base
-                 , xmonad
-                 , xmonad-contrib
-                 , containers
+    build-depends:    base
+                    , xmonad
+                    , xmonad-contrib
+                    , containers
+                    , taffybar
     hs-source-dirs:   my-xmonad
     default-language: Haskell2010
+
+executable taffybar
+           main-is:          Main.hs
+           build-depends:    base
+                           , containers
+                           , directory
+                           , filepath
+                           , gtk3
+                           , taffybar
+                           , X11>=1.8
+           hs-source-dirs:   my-taffybar
+           default-language: Haskell2010
