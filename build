@@ -3,6 +3,8 @@ set -eu
 
 cd $HOME/.xmonad
 
-cabal build --verbose=2
-cabal install --installdir=. --verbose=0 --overwrite-policy=always
-mv xmonad "$1"
+cabal install exe:xmonad \
+      --enable-executable-stripping \
+      --enable-optimization=2 \
+      --overwrite-policy=always
+
