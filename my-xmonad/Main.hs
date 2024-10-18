@@ -284,7 +284,7 @@ xmobarSub1 = statusBarPropTo "_XMONAD_LOG_1" "xmobar --screen=1 $HOME/.config/xm
 xmobarSub2 :: StatusBarConfig
 xmobarSub2 = statusBarPropTo "_XMONAD_LOG_2" "xmobar --screen=2 $HOME/.config/xmobar/xmobarrc_sub2" (pure $ xmobarMainPP 2)
 taffyBar :: ScreenId -> StatusBarConfig
-taffyBar = \n -> statusBarProp "taffybar" (pure $ xmobarMainPP n)
+taffyBar = \n -> statusBarProp "$HOME/.xmonad/taffybar" (pure $ xmobarMainPP n)
 
 xmobarMainPP :: ScreenId -> PP
 xmobarMainPP = \s -> filterOutWsPP [scratchpadWorkspaceTag] xmobarPP
