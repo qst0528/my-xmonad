@@ -260,16 +260,16 @@ main = xmonad $ do
     sKeys    =: ["r", "s", "t"]
 
 myGSConfig = def
-  { gs_font        = "xft:Noto Sans Mono CJK JP:size=12"
+  { gs_font        = "xft:Sarasa Mono Slab J:style=Extralight:size=12"
   , gs_cellheight  = 64
   , gs_cellwidth   = 180
   }
 
 myXPConfig :: XPConfig
 myXPConfig = def
-  { font     = "xft:Noto Sans Mono CJK JP:size=12"
+  { font     = "xft:Noto Sans Mono ExtraCondensed:style=Extralight:size=12"
   , height   = 56
-  , position = CenteredAt 0.3 0.8
+  , position = CenteredAt 0.9 0.8
   }
 
 searchList :: [(String, S.SearchEngine)]
