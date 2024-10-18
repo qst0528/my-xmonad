@@ -99,7 +99,11 @@ import XMonad.Actions.Search as S (promptSearch,
                                   hoogle,
                                   maps,
                                   google)
-import XMonad.Hooks.ManageDocks   (docks, avoidStruts, ToggleStruts(..))
+import XMonad.Hooks.ManageDocks   ( docksStartupHook
+                                  , docksEventHook
+                                  , manageDocks
+                                  , avoidStruts
+                                  , ToggleStruts(..))
 import XMonad.Hooks.EwmhDesktops  (ewmhFullscreen, ewmh, addEwmhWorkspaceSort)
 import XMonad.Hooks.StatusBar     (statusBarPropTo,
                                    statusBarProp,
@@ -145,6 +149,7 @@ main = xmonad $ do
   
   -- Attributes to modify
   manageHook  =+ namedScratchpadManageHook scratchpads
+  manageHook  =+ manageDocks
   manageHook  =+ composeOne [ isFullscreen -?> (doFullFloat <+> doRaise)
                             , isDialog     -?> doCenterFloat
                             , transience
@@ -162,13 +167,14 @@ main = xmonad $ do
   startupHook =+ safeSpawn "bash" [".xmonad/host-specific.sh"]
 
   handleEventHook =+ hintsEventHook
+  handleEventHook =+ docksEventHook
 
   resetLayout $ Tall 1 (3/100) (1/2)
   addLayout $ gaps [ (R, 630) ] $ Tall 1 (3/100) (1/2)
-  apply $ pagerHints . fullscreenSupportBorder . ewmhFullscreen . ewmh . docks . Hacks.javaHack
   modifyLayout $ spacingRaw True (Border 10 10 10 10) True (Border 10 10 10 10) True
   modifyLayout $ layoutHintsWithPlacement (0.5, 0.5)
   modifyLayout $ avoidStruts
+  apply $ pagerHints . fullscreenSupportBorder . ewmhFullscreen . ewmh . Hacks.javaHack
 
   apply $ dynamicSBs barSpawner
   apply $ dynamicProjects projects
